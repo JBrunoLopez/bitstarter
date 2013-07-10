@@ -38,6 +38,12 @@ var assertFileExists = function(infile) {
     return instr;
 };
 
+var saveJsonToOutput = function(file, checkJson) {
+    var outJson = JSON.stringify(checkJson, null, 4);
+    console.log(outJson);
+    fs.writeFileSync(file, outJson);
+};
+
 var checkHtmlFromUrl = function(url) {
     return rest.get(url).on('complete', function(result) {
         var html = '';
@@ -47,8 +53,7 @@ var checkHtmlFromUrl = function(url) {
             html = result;
         }
         checkJson = checkHtmlFile(cheerio.load(html), program.checks)
-        var outJson = JSON.stringify(checkJson, null, 4);
-        console.log(outJson);
+        saveJsonToOutput("output.txt", checkJson);
     });
 };
 
@@ -88,8 +93,7 @@ if(require.main == module) {
         checkHtmlFromUrl(program.url);
     } else {
         var checkJson = checkHtmlFile(cheerioHtmlFile(program.file), program.checks);
-        var outJson = JSON.stringify(checkJson, null, 4);
-        console.log(outJson);
+        saveJsonToOutput("output.txt", checkJson);
     }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
